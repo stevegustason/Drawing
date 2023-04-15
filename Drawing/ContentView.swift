@@ -222,6 +222,8 @@ struct ContentView: View {
 }
 */
 
+/*
+// Day 3 content
 struct Trapezoid: Shape {
     var insetAmount: Double
     
@@ -352,95 +354,177 @@ struct ContentView: View {
          */
         
         /*
-        // Screen inverts a color, performs a multiply, and then inverts them again to give a brighter image
-        VStack {
-            ZStack {
-                Circle()
-                    .fill(.red)
-                    .frame(width: 200 * amount)
-                    .offset(x: -50, y: -80)
-                    .blendMode(.screen)
-                
-                Circle()
-                    .fill(.green)
-                    .frame(width: 200 * amount)
-                    .offset(x: 50, y: -80)
-                    .blendMode(.screen)
-                
-                Circle()
-                    .fill(.blue)
-                    .frame(width: 200 * amount)
-                    .blendMode(.screen)
-            }
-            .frame(width: 300, height: 300)
+         // Screen inverts a color, performs a multiply, and then inverts them again to give a brighter image
+         VStack {
+         ZStack {
+         Circle()
+         .fill(.red)
+         .frame(width: 200 * amount)
+         .offset(x: -50, y: -80)
+         .blendMode(.screen)
+         
+         Circle()
+         .fill(.green)
+         .frame(width: 200 * amount)
+         .offset(x: 50, y: -80)
+         .blendMode(.screen)
+         
+         Circle()
+         .fill(.blue)
+         .frame(width: 200 * amount)
+         .blendMode(.screen)
+         }
+         .frame(width: 300, height: 300)
          
          Image("Zelda")
-             .resizable()
-             .scaledToFit()
-             .frame(width: 200, height: 200)
-            // Saturation lets us control how much color is used in an image
-             .saturation(amount)
-             .blur(radius: (1 - amount) * 20)
-            
-            Slider(value: $amount)
-                .padding()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
-        .ignoresSafeArea()
+         .resizable()
+         .scaledToFit()
+         .frame(width: 200, height: 200)
+         // Saturation lets us control how much color is used in an image
+         .saturation(amount)
+         .blur(radius: (1 - amount) * 20)
+         
+         Slider(value: $amount)
+         .padding()
+         }
+         .frame(maxWidth: .infinity, maxHeight: .infinity)
+         .background(.black)
+         .ignoresSafeArea()
          */
         
         /*
-        Trapezoid(insetAmount: insetAmount)
-                    .frame(width: 200, height: 100)
-                    .onTapGesture {
-                        withAnimation {
-                            insetAmount = Double.random(in: 10...90)
-                        }
-                    }
+         Trapezoid(insetAmount: insetAmount)
+         .frame(width: 200, height: 100)
+         .onTapGesture {
+         withAnimation {
+         insetAmount = Double.random(in: 10...90)
+         }
+         }
          */
         
         /*
-        Checkerboard(rows: rows, columns: columns)
-                    .onTapGesture {
-                        withAnimation(.linear(duration: 3)) {
-                            rows = 8
-                            columns = 16
-                        }
-                    }
+         Checkerboard(rows: rows, columns: columns)
+         .onTapGesture {
+         withAnimation(.linear(duration: 3)) {
+         rows = 8
+         columns = 16
+         }
+         }
          */
         
         VStack(spacing: 0) {
-                    Spacer()
+            Spacer()
+            
+            Spirograph(innerRadius: Int(innerRadius), outerRadius: Int(outerRadius), distance: Int(distance), amount: amount)
+                .stroke(Color(hue: hue, saturation: 1, brightness: 1), lineWidth: 1)
+                .frame(width: 300, height: 300)
+            
+            Spacer()
+            
+            Group {
+                Text("Inner radius: \(Int(innerRadius))")
+                Slider(value: $innerRadius, in: 10...150, step: 1)
+                    .padding([.horizontal, .bottom])
+                
+                Text("Outer radius: \(Int(outerRadius))")
+                Slider(value: $outerRadius, in: 10...150, step: 1)
+                    .padding([.horizontal, .bottom])
+                
+                Text("Distance: \(Int(distance))")
+                Slider(value: $distance, in: 1...150, step: 1)
+                    .padding([.horizontal, .bottom])
+                
+                Text("Amount: \(amount, format: .number.precision(.fractionLength(2)))")
+                Slider(value: $amount)
+                    .padding([.horizontal, .bottom])
+                
+                Text("Color")
+                Slider(value: $hue)
+                    .padding(.horizontal)
+            }
+        }
+    }
+}
+*/
 
-                    Spirograph(innerRadius: Int(innerRadius), outerRadius: Int(outerRadius), distance: Int(distance), amount: amount)
-                        .stroke(Color(hue: hue, saturation: 1, brightness: 1), lineWidth: 1)
-                        .frame(width: 300, height: 300)
+// Day 4 content
+struct Arrow: InsettableShape {
+    var insetAmount = 0.0
 
-                    Spacer()
+    var animatableData: Double {
+        get { insetAmount }
+        set { insetAmount = newValue}
+    }
 
-                    Group {
-                        Text("Inner radius: \(Int(innerRadius))")
-                        Slider(value: $innerRadius, in: 10...150, step: 1)
-                            .padding([.horizontal, .bottom])
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
 
-                        Text("Outer radius: \(Int(outerRadius))")
-                        Slider(value: $outerRadius, in: 10...150, step: 1)
-                            .padding([.horizontal, .bottom])
+        path.move(to: CGPoint(x: rect.midX, y: rect.height - insetAmount))
+        path.addLine(to: CGPoint(x: rect.midX, y: insetAmount))
+        path.addLine(to: CGPoint(x: insetAmount, y: rect.height * 0.33))
+        path.move(to: CGPoint(x: rect.midX, y: insetAmount))
+        path.addLine(to: CGPoint(x: rect.width - insetAmount, y: rect.height * 0.33))
 
-                        Text("Distance: \(Int(distance))")
-                        Slider(value: $distance, in: 1...150, step: 1)
-                            .padding([.horizontal, .bottom])
+        return path
+    }
 
-                        Text("Amount: \(amount, format: .number.precision(.fractionLength(2)))")
-                        Slider(value: $amount)
-                            .padding([.horizontal, .bottom])
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var arrow = self
+        arrow.insetAmount += amount
+        return arrow
+    }
+}
 
-                        Text("Color")
-                        Slider(value: $hue)
-                            .padding(.horizontal)
-                    }
+struct ColorCyclingRectangle: View {
+    var amount = 0.0
+    var steps = 100
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<steps) { value in
+                Rectangle()
+                    .inset(by: Double(value))
+                    .strokeBorder(color(for: value, brightness: 1), lineWidth: 2)
+            }
+        }
+    }
+
+    func color(for value: Int, brightness: Double) -> Color {
+        var targetHue = Double(value) / Double(steps) + amount
+
+        if targetHue > 1 {
+            targetHue -= 1
+        }
+
+        return Color(hue: targetHue, saturation: 1, brightness: brightness)
+    }
+}
+
+struct ContentView: View {
+    @State private var lineWidth = 1.0
+    
+    @State private var colorCycle = 0.0
+
+    var body: some View {
+        
+        VStack {
+            Arrow()
+                .strokeBorder(.blue, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+            
+            Spacer()
+            
+            Button("Change line width") {
+                withAnimation(.easeInOut(duration: 1)) {
+                    lineWidth = Double.random(in: 1...20)
                 }
+            }
+            
+            ColorCyclingRectangle(amount: colorCycle)
+                            .frame(width: 300, height: 300)
+
+            Slider(value: $colorCycle)
+                .padding()
+        }
     }
 }
  
